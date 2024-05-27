@@ -1,4 +1,4 @@
-name: GHAction example  
+name: GHAction 
 
 on:
   workflow_dispatch:
@@ -21,7 +21,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ vars.DOCKERHUB_USERNAME }}/example
+          images: ${{ vars.DOCKERHUB_USERNAME }}/chmury_zadanie2
           flavor: latest=false
           tags: |
             type=sha,priority=100,prefix=sha-,format=short
@@ -51,8 +51,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           cache-from: |
-            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/example:cache 
+            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/chmury_zadanie2:cache 
           cache-to: |
-            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/example:cache  
+            type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/chmury_zadanie2:cache  
           tags: ${{ steps.meta.outputs.tags }}
       
