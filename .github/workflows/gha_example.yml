@@ -81,4 +81,4 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/${{ github.actor }}/Chmury_Zadanie2:${{ steps.meta.outputs.tags }}
+          tags: ghcr.io/${{ github.actor }}/Chmury_Zadanie2:${{ steps.meta.outputs.version }}
