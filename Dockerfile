@@ -32,7 +32,7 @@ COPY --chown=node:node server.js .
 
 # --------- ETAP 2 ------------------------
 # Ustawienie obrazu bazowego jako 'node:iron-alpine3.20'
-FROM node:iron-alpine3.19
+FROM node:18.18.1-alpine3.17
 
 # Zdefiniowanie zmiennej srodowiskowej 'VERSION' z domyślną wartością 'v1.0.0'
 ARG VERSION
@@ -43,7 +43,7 @@ ENV VERSION=${VERSION:-v1.0.0}
 RUN apk add --no-cache git && \ 
     apk update && \
     apk upgrade && \
-    apk add --no-cache curl=8.7.1-r0
+    apk add --no-cache curl
 
 # Ustawienie użytkownika 'node' jako domyślnego użytkownika dla polecenia RUN i COPY
 USER node
