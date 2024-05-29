@@ -16,12 +16,10 @@ jobs:
     runs-on: ubuntu-latest
       
     steps:
-      - 
-        name: Check out the source_repo
+      - name: Check out the source_repo
         uses: actions/checkout@v4
       
-      -
-        name: Docker metadata definitions
+      - name: Docker metadata definitions
         id: meta
         uses: docker/metadata-action@v5
         with:
@@ -31,23 +29,19 @@ jobs:
             type=sha,priority=100,prefix=sha-,format=short
             type=semver,priority=200,pattern={{version}}   
 
-      - 
-        name: QEMU set-up
+      - name: QEMU set-up
         uses: docker/setup-qemu-action@v3
 
-      - 
-        name: Buildx set-up
+      - name: Buildx set-up
         uses: docker/setup-buildx-action@v3
 
-      - 
-        name: Login to DockerHub
+      - name: Login to DockerHub
         uses: docker/login-action@v3
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - 
-        name: Build and push Docker image
+      - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -67,8 +61,21 @@ jobs:
           command: cves
           image: ${{ steps.meta.outputs.tags }}
           only-severities: critical, high
-          summary: true
-        
+          format: json # Save output as JSON
+        continue-on-error: true
+        # Save the output to a file
+        run: docker scout cves ${{ steps.meta.outputs.tags }} --only-severities critical,high --format json > scout-results.json
+
+      - name: Check for vulnerabilities
+        id: check-vulns
+        run: |
+          echo "Checking for critical or high vulnerabilities..."
+          if grep -q '"severity": "critical"' scout-results.json || grep -q '"severity": "high"' scout-results.json; then
+            echo "Critical or high vulnerabilities found!"
+            exit 1
+          else
+            echo "No critical or high vulnerabilities found."
+          fi
 
       - name: Login to GitHub Container Registry
         if: success()
