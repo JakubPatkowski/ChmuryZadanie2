@@ -16,10 +16,12 @@ jobs:
     runs-on: ubuntu-latest
       
     steps:
-      - name: Check out the source_repo
+      - 
+        name: Check out the source_repo
         uses: actions/checkout@v4
       
-      - name: Docker metadata definitions
+      -
+        name: Docker metadata definitions
         id: meta
         uses: docker/metadata-action@v5
         with:
@@ -29,19 +31,23 @@ jobs:
             type=sha,priority=100,prefix=sha-,format=short
             type=semver,priority=200,pattern={{version}}   
 
-      - name: QEMU set-up
+      - 
+        name: QEMU set-up
         uses: docker/setup-qemu-action@v3
 
-      - name: Buildx set-up
+      - 
+        name: Buildx set-up
         uses: docker/setup-buildx-action@v3
 
-      - name: Login to DockerHub
+      - 
+        name: Login to DockerHub
         uses: docker/login-action@v3
         with:
           username: ${{ vars.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push Docker image
+      - 
+        name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -54,31 +60,27 @@ jobs:
             type=registry,ref=${{ vars.DOCKERHUB_USERNAME }}/chmury_zadanie2:cache  
           tags: ${{ steps.meta.outputs.tags }}
 
-      - name: Docker Scout CVE Scan
+       - name: Docker Scout CVE Scan
         id: docker-scout
         uses: docker/scout-action@v1
         with:
           command: cves
           image: ${{ steps.meta.outputs.tags }}
           only-severities: critical, high
-          format: json # Save output as JSON
+          summary: true
         continue-on-error: true
-        # Save the output to a file
-        run: docker scout cves ${{ steps.meta.outputs.tags }} --only-severities critical,high --format json > scout-results.json
 
-      - name: Check for vulnerabilities
-        id: check-vulns
+      - name: Set CVE Scan Result
+        id: cve-scan-result
         run: |
-          echo "Checking for critical or high vulnerabilities..."
-          if grep -q '"severity": "critical"' scout-results.json || grep -q '"severity": "high"' scout-results.json; then
-            echo "Critical or high vulnerabilities found!"
-            exit 1
+          if [ "${{ steps.docker-scout.outcome }}" == "failure" ]; then
+            echo "cve_scan_failed=true" >> $GITHUB_ENV
           else
-            echo "No critical or high vulnerabilities found."
+            echo "cve_scan_failed=false" >> $GITHUB_ENV
           fi
 
       - name: Login to GitHub Container Registry
-        if: success()
+        if: env.cve_scan_failed == 'false'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -86,7 +88,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image to GitHub Container Registry
-        if: success()
+        if: env.cve_scan_failed == 'false'
         uses: docker/build-push-action@v5
         with:
           context: .
