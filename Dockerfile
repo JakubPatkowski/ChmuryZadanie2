@@ -32,7 +32,7 @@ COPY --chown=node:node server.js .
 
 # --------- ETAP 2 ------------------------
 # Ustawienie obrazu bazowego jako 'node:iron-alpine3.20'
-FROM node:18.18.1-alpine3.17
+FROM node:7.1.0-alpine
 
 # Zdefiniowanie zmiennej srodowiskowej 'VERSION' z domyślną wartością 'v1.0.0'
 ARG VERSION
