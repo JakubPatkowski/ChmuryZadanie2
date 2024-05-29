@@ -68,6 +68,7 @@ jobs:
           image: ${{ steps.meta.outputs.tags }}
           only-severities: critical, high
           summary: true
+          exit-code: true
 
       - name: Conditional Step Execution
         if: steps.docker-scout.outputs.summary == false  # Execute if there are no critical or high vulnerabilities
