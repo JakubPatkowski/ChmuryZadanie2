@@ -6,6 +6,10 @@ on:
     tags:
     - 'v*'
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   ci_step:
     name: Build, tag and push Docker image to DockerHub
@@ -81,4 +85,4 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/${{ github.actor }}/chmury_zadanie2:${{ steps.meta.outputs.version }}
+          tags: ghcr.io/${{ github.actor }}/chmuryzadanie2:${{ steps.meta.outputs.tags }}
