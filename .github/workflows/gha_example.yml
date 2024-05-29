@@ -68,18 +68,10 @@ jobs:
           image: ${{ steps.meta.outputs.tags }}
           only-severities: critical, high
           summary: true
-        continue-on-error: true
-
-      - name: Set scan exit code
-        id: set-exit-code
-        run: echo "::set-output name=exit-code::${{ steps.docker-scout.outcome }}"
-
-      - name: Fail if vulnerabilities are found
-        if: ${{ steps.set-exit-code.outputs.exit-code != 'success' }}
-        run: exit 1
+        
 
       - name: Login to GitHub Container Registry
-        if: ${{steps.set-exit-code.outputs.exit-code == 'success' }}
+        if: success()
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -87,7 +79,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image to GitHub Container Registry
-        if: ${{steps.set-exit-code.outputs.exit-code == 'success' }}
+        if: success()
         uses: docker/build-push-action@v5
         with:
           context: .
