@@ -7,7 +7,7 @@
 FROM scratch as builder
 
 # Dodanie zawartości Alpine Linux do obrazu
-ADD alpine-minirootfs-3.20.0-x86_64.tar.gz /
+ADD alpine-minirootfs-3.19.1-x86_64.tar /
 
 LABEL maintainer="Jakub Patkowski"
 
