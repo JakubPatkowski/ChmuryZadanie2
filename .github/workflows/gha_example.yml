@@ -70,12 +70,12 @@ jobs:
           summary: true
 
       - name: Conditional Step Execution
-        if: steps.docker-scout.outputs.summary == 'true'  # Execute if there are no critical or high vulnerabilities
+        if: steps.docker-scout.outputs.summary == true  # Execute if there are no critical or high vulnerabilities
         run: |
           echo "No critical or high vulnerabilities detected. Proceeding with GitHub Container Registry login and push."
         
       - name: Login to GitHub Container Registry
-        if: steps.docker-scout.outputs.summary == 'true'
+        if: steps.docker-scout.outputs.summary == true
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
@@ -83,7 +83,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push Docker image to GitHub Container Registry
-        if: steps.docker-scout.outputs.summary == 'true'
+        if: steps.docker-scout.outputs.summary == true
         uses: docker/build-push-action@v5
         with:
           context: .
