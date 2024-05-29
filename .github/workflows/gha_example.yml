@@ -85,4 +85,4 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/${{ github.actor }}/chmuryzadanie2:latest
+          tags: ghcr.io/JakubPatkowski/chmuryzadanie2:latest
