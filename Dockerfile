@@ -7,7 +7,7 @@
 FROM scratch as builder
 
 # Dodanie zawartości Alpine Linux do obrazu
-ADD alpine-minirootfs-3.19.1-x86_64.tar /
+ADD alpine-minirootfs-3.20.0-x86_64.tar.gz /
 
 LABEL maintainer="Jakub Patkowski"
 
@@ -32,7 +32,8 @@ COPY --chown=node:node server.js .
 
 # --------- ETAP 2 ------------------------
 # Ustawienie obrazu bazowego jako 'node:iron-alpine3.20'
-FROM node:12.16.3-alpine3.11
+# FROM node:12.16.3-alpine3.11
+FROM node:iron-alpine3.20
 
 # Zdefiniowanie zmiennej srodowiskowej 'VERSION' z domyślną wartością 'v1.0.0'
 ARG VERSION
