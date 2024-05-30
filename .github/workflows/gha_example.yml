@@ -91,4 +91,4 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ghcr.io/jakubpatkowski/${{ github.event.inputs.tag }}
+          tags: ghcr.io/jakubpatkowski/chmuryzadanie2:${{ github.event.inputs.tag }}
